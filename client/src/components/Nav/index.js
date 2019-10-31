@@ -1,16 +1,7 @@
 import React, { Component } from "react";
-import Search from "../../pages/Search";
 
-import {
-  Navbar,
-  Nav,
-  Form,
-  FormControl,
-  Switch,
-  NavItem,
-  Button
-} from "react-bootstrap";
-import { Route, Link } from "react-router-dom";
+import { Navbar, Nav, NavItem } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 class Navigation extends Component {
   render() {

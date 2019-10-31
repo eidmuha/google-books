@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import SearchInput from "../components/SearchInput";
 import SearchDetails from "../components/SearchDetails";
-import SearchBtn from "../components/SearchBtn";
-import { Link } from "react-router-dom";
 
 import API from "../utils/API";
+
 import {
   Container,
   FormControl,
@@ -28,22 +26,6 @@ class Detail extends Component {
   //   this.loadBooks();
   // }
 
-  loadBooks = () => {
-    API.getBooks()
-      .then(res => {
-        this.setState({
-          books: res.data.items,
-          title: "",
-          authors: "",
-          description: "",
-          image: "",
-          link: ""
-        });
-        console.log(this.state.books);
-      })
-      .catch(err => console.log(err));
-  };
-
   handleInputChange = event => {
     const { name, value } = event.target;
     this.setState({
@@ -57,9 +39,32 @@ class Detail extends Component {
     if (this.state.title) {
       console.log("SEARCHING BOOKS: " + this.state.title);
       API.getBook(this.state.title)
-        .then(res => this.loadBooks())
+        .then(res => {
+          this.setState({
+            books: res.data.items,
+            title: "",
+            authors: "",
+            description: "",
+            image: "",
+            link: ""
+          });
+          console.log(this.state.books);
+        })
         .catch(err => console.log(err));
     }
+  };
+
+  handleBtnSave = book => {
+    // let bsbNumber = book.industryIdentifiers[0].identifier;
+    API.saveBook({
+      title: book.title,
+      author: book.authors,
+      description: book.description,
+      image: book.imageLinks.smallThumbnail,
+      link: book.previewLink
+    })
+      .then(res => res.send(true))
+      .catch(err => console.log(err));
   };
 
   render() {
@@ -71,7 +76,6 @@ class Detail extends Component {
               value={this.state.title}
               onChange={this.handleInputChange}
               name="title"
-              placeholder="Title (required)"
               placeholder="Search book here"
               aria-label="Search book here"
               aria-describedby="basic-addon2"
@@ -95,8 +99,13 @@ class Detail extends Component {
         >
           {this.state.books.length ? (
             <>
-              {this.state.books.map(book => (
-                <SearchDetails></SearchDetails>
+              {this.state.books.map((book, index) => (
+                <SearchDetails
+                  key={index}
+                  books={book.volumeInfo}
+                  showModal={this.showModal}
+                  handleBtnSave={this.handleBtnSave}
+                />
               ))}
             </>
           ) : (
