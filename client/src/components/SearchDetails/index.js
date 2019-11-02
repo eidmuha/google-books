@@ -15,6 +15,16 @@ function SearchDetails(props) {
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
 
+  const onClick = data => {
+    props.handleBtnSave(data);
+    handleClose();
+  };
+
+  const onClickBtnDelete = id => {
+    props.handleBtnDelete(id);
+    handleClose();
+  };
+
   return (
     <>
       <Card className="m-3">
@@ -33,15 +43,24 @@ function SearchDetails(props) {
               >
                 View
               </Button>
-
-              <Button
-                variant="success"
-                className="float-right ml-5"
-                value={props.books}
-                onClick={() => props.handleBtnSave(props.books)}
-              >
-                Save
-              </Button>
+              {props.saved ? (
+                <Button
+                  variant="success"
+                  className="float-right ml-5"
+                  onClick={() => props.handleBtnDelete(props.books._id)}
+                >
+                  Delete
+                </Button>
+              ) : (
+                <Button
+                  variant="success"
+                  className="float-right ml-5"
+                  value={props.books}
+                  onClick={() => props.handleBtnSave(props.books)}
+                >
+                  Save
+                </Button>
+              )}
             </Col>
           </Row>
           <Row>
@@ -66,11 +85,19 @@ function SearchDetails(props) {
                 </p>
               </Col>
               <Col xs={6} md={4}>
-                <Image
-                  src={props.books.imageLinks.smallThumbnail}
-                  className="pull-right"
-                  thumbnail
-                />
+                {props.saved ? (
+                  <Image
+                    src={props.books.image}
+                    className="pull-right"
+                    thumbnail
+                  />
+                ) : (
+                  <Image
+                    src={props.books.imageLinks.smallThumbnail}
+                    className="pull-right"
+                    thumbnail
+                  />
+                )}
               </Col>
             </Row>
             <Row>
@@ -83,9 +110,22 @@ function SearchDetails(props) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save
-          </Button>
+          {props.saved ? (
+            <Button
+              variant="primary"
+              onClick={() => onClickBtnDelete(props.books._id)}
+            >
+              Delete
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              value={props.books}
+              onClick={() => onClick(props.books)}
+            >
+              Save
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </>

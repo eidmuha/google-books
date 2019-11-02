@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-// import SearchBook from "../components/SearchInput";
 import SearchDetails from "../components/SearchDetails";
 import API from "../utils/API";
 import { Container, Jumbotron } from "react-bootstrap";
-// import { Input, TextArea, FormBtn } from "../components/Form";
 
 class Books extends Component {
   state = {
-    book: {}
+    books: [],
+    saved: true
   };
 
   componentDidMount() {
@@ -16,9 +15,7 @@ class Books extends Component {
 
   loadBooks = () => {
     API.getBooks()
-      .then(res =>
-        this.setState({ books: res.data, title: "", author: "", synopsis: "" })
-      )
+      .then(res => this.setState({ books: res.data }))
       .catch(err => console.log(err));
   };
 
@@ -28,27 +25,8 @@ class Books extends Component {
       .catch(err => console.log(err));
   };
 
-  handleInputChange = event => {
-    const { name, value } = event.target;
-    this.setState({
-      [name]: value
-    });
-  };
-
-  handleFormSubmit = event => {
-    event.preventDefault();
-    if (this.state.title && this.state.author) {
-      API.saveBook({
-        title: this.state.title,
-        author: this.state.author,
-        synopsis: this.state.synopsis
-      })
-        .then(res => this.loadBooks())
-        .catch(err => console.log(err));
-    }
-  };
-
   render() {
+    console.log(this.state.books);
     return (
       <Container>
         <Jumbotron>
@@ -59,7 +37,22 @@ class Books extends Component {
           className="rounded"
           style={{ backgroundColor: "#e9e9e9", padding: "2px" }}
         >
-          <SearchDetails />
+          {this.state.books.length ? (
+            <>
+              {this.state.books.map((book, index) => (
+                <SearchDetails
+                  key={index}
+                  books={book}
+                  showModal={this.showModal}
+                  handleBtnSave={this.handleBtnSave}
+                  handleBtnDelete={this.deleteBook}
+                  saved={this.state.saved}
+                />
+              ))}
+            </>
+          ) : (
+            <h3>No Results to Display</h3>
+          )}
         </Container>
       </Container>
     );

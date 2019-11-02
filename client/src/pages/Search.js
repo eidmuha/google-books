@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import SearchDetails from "../components/SearchDetails";
-
 import API from "../utils/API";
-
 import {
   Container,
   FormControl,
@@ -18,14 +16,9 @@ class Detail extends Component {
     authors: "",
     description: "",
     image: "",
-    link: ""
+    link: "",
+    saved: false
   };
-  // When this component mounts, grab the book with the _id of this.props.match.params.id
-  // e.g. localhost:3000/books/599dcb67f0f16317844583fc
-  // componentDidMount() {
-  //   this.loadBooks();
-  // }
-
   handleInputChange = event => {
     const { name, value } = event.target;
     this.setState({
@@ -55,16 +48,13 @@ class Detail extends Component {
   };
 
   handleBtnSave = book => {
-    // let bsbNumber = book.industryIdentifiers[0].identifier;
     API.saveBook({
       title: book.title,
-      author: book.authors,
+      authors: book.authors,
       description: book.description,
       image: book.imageLinks.smallThumbnail,
       link: book.previewLink
-    })
-      .then(res => res.send(true))
-      .catch(err => console.log(err));
+    }).catch(err => console.log(err));
   };
 
   render() {
@@ -105,6 +95,7 @@ class Detail extends Component {
                   books={book.volumeInfo}
                   showModal={this.showModal}
                   handleBtnSave={this.handleBtnSave}
+                  saved={this.state.saved}
                 />
               ))}
             </>
