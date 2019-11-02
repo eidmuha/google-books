@@ -24,7 +24,6 @@ class Detail extends Component {
     this.setState({
       [name]: value
     });
-    console.log(this.state.title);
   };
 
   handleFormSubmit = event => {
@@ -41,7 +40,6 @@ class Detail extends Component {
             image: "",
             link: ""
           });
-          console.log(this.state.books);
         })
         .catch(err => console.log(err));
     }
